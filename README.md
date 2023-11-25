@@ -3,8 +3,8 @@
 This widget for the iOS lockscreen shows the current state of charge (SoC) and the charging status of the Kia EV6.
 
 <p float="left">
-    <img src="./images/kia_lockscreen_widget.jpg" width="300" alt="Kia Lockscreen Widget"/>
-    <img src="./images/kia_lockscreen_widget_charging.jpg" width="300" alt="Kia Lockscreen Widget (Charging)"/>
+    <img src="./images/kia_lockscreen_widget.jpg" width="300" alt="Kia Lockscreen Widget" width="49%"/>
+    <img src="./images/kia_lockscreen_widget_charging.jpg" width="300" alt="Kia Lockscreen Widget (Charging)" width="49%"/>
 </p>
 
 ## Background
