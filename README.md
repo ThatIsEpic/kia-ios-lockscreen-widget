@@ -60,7 +60,8 @@ There might be a minor lag or difference of the SoC compared to value displayed 
 
 ### Support
 
-Since I am reusing Niklas' application, I would ask you to support him for his efforts. 
+Since I am reusing Niklas' application, I would ask you to support him for his efforts.
+<br>
 <a href="https://www.paypal.me/niklasvieth" >
   <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width="200px" />
 </a>
