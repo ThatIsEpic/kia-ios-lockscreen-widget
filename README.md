@@ -1,15 +1,15 @@
-# Kia SoC iOS Lockscreen Widget
+# Kia EV6 SoC iOS Lockscreen Widget
 
-This widget for the iOS lockscreen shows the current state of charge (SoC) and the charging status of the Kia EV6.
+This widget for the iOS lockscreen displays the current state of charge (SoC) and the charging status of the Kia EV6.
 
 <p float="left">
     <img src="./images/kia_lockscreen_widget.png" width="300" alt="Kia Lockscreen Widget"/>
-    <img src="./images/kia_lockscreen_widget_charging.png" width="300" alt="Kia Lockscreen Widget (Charging)"/>
+    <img src="./images/kia_lockscreen_widget_charging.png" width="300" alt="Kia Lockscreen Widget (charging)"/>
 </p>
 
 ## Background
 
-Since the official Kia Connect App does not support any kind of widgets for iOS, I gladly found Niklas Vieth development for the Polestart 2. With the help of [Scriptable](https://scriptable.app/) and his installation guide it was easily changeable. The widget relies on the [Tibber GraphQL API](https://developer.tibber.com/docs/overview) as proxy to get the current state of charge of the battery. Thus, you will also need a Tibber account to get access to the SoC data.
+Since the official Kia Connect App does not support any kind of widgets for iOS, I gladly found Niklas Vieth development for the Polestart 2. With the help of [Scriptable](https://scriptable.app/) and his installation guide it was easily changeable. The widget relies on the [Tibber GraphQL API](https://developer.tibber.com/docs/overview) as a proxy to get the current state of charge of the battery. Thus, you will also need a Tibber account to get access to the SoC data.
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ Since the official Kia Connect App does not support any kind of widgets for iOS,
 2. There are two options to install the widget:
     - [Recommended] Click on the following button to install via `ScriptDude` (make sure that you have followed step 3 of [Prerequisites](./README.md#Prerequisites)). ScriptDude will automatically receive updates of new versions of this widget
 
-        [![Download with ScriptDude](https://scriptdu.de/download.svg)](https://scriptdu.de/?name=Polestar%20Lockscreen%20SoC%20Widget&source=https%3A%2F%2Fgist.githubusercontent.com%2Fniklasvieth%2F9cb306b53835a9a283e34b77f0f2513f%2Fraw%2Ff5e29c99e8cc017c0d4fa2f8e825f79031282a2a%2Fpolestar-lockscreen-widget.js&docs=https%3A%2F%2Fgithub.com%2Fniklasvieth%2Fpolestar-ios-lockscreen-widget%2Fblob%2Fmain%2FREADME.md#generator&color=green&icon=battery-half)
+        [![Download with ScriptDude](https://scriptdu.de/download.svg)](https://scriptdu.de/?name=Kia+Lockscreen+Widget&source=https%3A%2F%2Fgist.githubusercontent.com%2FThatIsEpic%2Fa1965e1c65aa7dfc8a819d51826d4b7b%2Fraw%2F17783d57d7848515dcb4f7035ff6922dfb56e280%2Fkia-lockscreen-widget.js&docs=#generator)
     - Copy the content of [kia-lockscreen-widget.js](https://gist.github.com/niklasvieth/9cb306b53835a9a283e34b77f0f2513f), create a new script in `Scriptable`, paste the content and rename it to `Kia Lockscreen SoC Widget`.
 
 3. Replace the placeholder values for `<TIBBER_EMAIL>` and `<TIBBER_PASSWORD>` with your Tibber login credentials.
@@ -43,7 +43,7 @@ Since the official Kia Connect App does not support any kind of widgets for iOS,
 
 5. Tap on the widget to configure the widget. Select `Kia Lockscreen SoC Widget` as script, leave everything else blank and save your lockscreen.
 
-6. You should now be able to see the :battery: SoC of your Kia on your lockscreen. By clicking on the widget you will (currently) be navigated to the Scriptable App.
+6. You should now be able to see the :battery: SoC of your Kia on your lockscreen. By clicking on the widget you will be navigated to the Kia Connect App.
 
 ## Additional comments
 

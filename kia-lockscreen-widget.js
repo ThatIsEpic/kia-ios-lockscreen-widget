@@ -6,8 +6,7 @@
 
 /**
  * This widget has been developed by Niklas Vieth and customised by Sebbo.
- * Installation and configuration details can be found at https://github.com/niklasvieth/polestar-ios-lockscreen-widget
- * or https://github.com/ThatIsEpic/kia-ios-lockscreen-widget
+ * Installation and configuration details can be found at https://github.com/ThatIsEpic/kia-ios-lockscreen-widget
  */
 
 // Tibber config
@@ -33,7 +32,7 @@ const percent = tibberData.battery.percent;
 const charging = tibberData.battery.isCharging;
 
 const widget = new ListWidget();
-widget.url = "kiaConnect://"; // Enter correct app url
+widget.url = "mkiaconnecteu://";
 const progressStack = await drawArc(widget, percent);
 
 const batteryInfoStack = progressStack.addStack();
