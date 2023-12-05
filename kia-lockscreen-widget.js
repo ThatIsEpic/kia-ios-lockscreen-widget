@@ -16,7 +16,14 @@ const TIBBER_BASE_URL = "https://app.tibber.com";
 
 // Icons
 const KIA_ICON = "https://www.kia.com/etc.clientlibs/settings/wcm/designs/kiapress/clientlibs/resources/rbr/logos/logo_kia_white-rbr.png";
+const KIA_ICON_SIZE = new Size(25, 13);
 const CHARGING_ICON = "https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iOS/ios15-battery-charging-status-icon.png";
+const CHARGING_ICON_SIZE = new Size(30, 16);
+
+// Circle constants
+const CANVAS_SIZE = 200;
+const CANVAS_WIDTH = 18; // circle thickness
+const CANVAS_RADIUS = 80; // circle radius
 
 // Check that parameters are set
 if (TIBBER_EMAIL === "<EMAIL_ADDRESS>") {
@@ -27,48 +34,67 @@ if (TIBBER_PASSWORD === "<PASSWORD>") {
 }
 
 // Create widget
-const tibberData = await fetchTibberData();
-const percent = tibberData.battery.percent;
-const charging = tibberData.battery.isCharging;
+try {
+  // Create widget
+  const tibberData = await fetchTibberData();
+  if (!tibberData || !tibberData.battery) {
+    handleError("Failed to fetch Tibber data or battery information");
+  }
 
-const widget = new ListWidget();
-widget.url = "mkiaconnecteu://";
-const progressStack = await drawArc(widget, percent);
+  const batteryPercent = tibberData.battery.percent;
+  const isCharging = tibberData.battery.isCharging;
 
-const batteryInfoStack = progressStack.addStack();
-batteryInfoStack.layoutVertically();
+  const widget = new ListWidget();
+  widget.url = "mkiaconnecteu://";
+  const progressStack = await drawArc(widget, batteryPercent);
 
-// Create icons
-const chargingIcon = await loadImage(CHARGING_ICON);
-const brandIcon = await loadImage(KIA_ICON);
+  const batteryInfoStack = progressStack.addStack();
+  batteryInfoStack.layoutVertically();
 
-const imageStack = batteryInfoStack.addStack();
-imageStack.addSpacer();
+  // Create icons
+  const chargingIcon = await loadImageWithHandling(CHARGING_ICON, "charging");
+  const brandIcon = await loadImageWithHandling(KIA_ICON, "brand");
 
-var icon;
-if (charging) {
-  icon = imageStack.addImage(chargingIcon);
-  icon.imageSize = new Size(30, 16);
-  imageStack.setPadding(0, 10, 0, 0);
-} else {
-  icon = imageStack.addImage(brandIcon);
-  icon.imageSize = new Size(25, 13);
+  const imageStack = batteryInfoStack.addStack();
+  imageStack.addSpacer();
+
+  var icon;
+  if (isCharging) {
+    icon = imageStack.addImage(chargingIcon);
+    icon.imageSize = CHARGING_ICON_SIZE;
+    imageStack.setPadding(0, 10, 0, 0);
+  } else {
+    icon = imageStack.addImage(brandIcon);
+    icon.imageSize = KIA_ICON_SIZE;
+  }
+  icon.cornerRadius = 4;
+
+  imageStack.addSpacer();
+
+  // Percent text
+  batteryInfoStack.addSpacer(2);
+  const textStack = batteryInfoStack.addStack();
+  textStack.centerAlignContent();
+  textStack.addSpacer();
+  textStack.addText(`${batteryPercent}%`);
+  textStack.addSpacer();
+
+  widget.presentAccessoryCircular();
+  Script.setWidget(widget);
+  Script.complete();
+} catch (error) {
+  handleError("Error fetching data", error);
 }
-icon.cornerRadius = 4;
 
-imageStack.addSpacer();
-
-// Percent text
-batteryInfoStack.addSpacer(2);
-const textStack = batteryInfoStack.addStack();
-textStack.centerAlignContent();
-textStack.addSpacer();
-textStack.addText(`${percent}%`);
-textStack.addSpacer();
-
-widget.presentAccessoryCircular();
-Script.setWidget(widget);
-Script.complete();
+// Error handler
+function handleError(errorMessage, errorDetails) {
+  console.error("Error:", errorDetails);
+  // Handle the error gracefully, perhaps show an error message on the widget
+  const errorWidget = new ListWidget();
+  errorWidget.addText(errorMessage);
+  Script.setWidget(errorWidget);
+  Script.complete();
+}
 
 /********************
  * Tibber API helpers
@@ -112,43 +138,48 @@ async function fetchTibberData() {
   return response.data.me.homes[0].electricVehicles[0];
 }
 
-async function loadImage(url) {
-  const req = new Request(url);
-  return req.loadImage();
+// Load images
+async function loadImageWithHandling(url, altText) {
+  try {
+    const req = new Request(url);
+    return await req.loadImage();
+  } catch (error) {
+    console.error(`Error loading ${altText} icon from ${url}:`, error);
+    throw new Error(`Failed to load ${altText} icon`);
+  }
 }
+
 
 /*****************************
  * Draw battery percent circle
  * Forked and adapted from https://gist.githubusercontent.com/Sillium/4210779bc2d759b494fa60ba4f464bd8/raw/9e172bac0513cc3cf0e70f3399e49d10f5d0589c/ProgressCircleService.js
  *****************************/
-async function drawArc(on, percent) {
-  const canvSize = 200;
+
+async function drawArc(on, batteryPercent) {
   const canvas = new DrawContext();
   canvas.opaque = false;
-  const canvWidth = 18; // circle thickness
-  const canvRadius = 80; // circle radius
-  canvas.size = new Size(canvSize, canvSize);
+  canvas.size = new Size(CANVAS_SIZE, CANVAS_SIZE);
   canvas.respectScreenScale = true;
 
-  const deg = Math.floor(percent * 3.6);
+  const deg = Math.floor(batteryPercent * 3.6);
 
-  let ctr = new Point(canvSize / 2, canvSize / 2);
-  const bgx = ctr.x - canvRadius;
-  const bgy = ctr.y - canvRadius;
-  const bgd = 2 * canvRadius;
+  let ctr = new Point(CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+  const bgx = ctr.x - CANVAS_RADIUS;
+  const bgy = ctr.y - CANVAS_RADIUS;
+  const bgd = 2 * CANVAS_RADIUS;
   const bgr = new Rect(bgx, bgy, bgd, bgd);
 
   canvas.opaque = false;
 
   canvas.setFillColor(Color.white());
   canvas.setStrokeColor(new Color("#333333"));
-  canvas.setLineWidth(canvWidth);
+  canvas.setLineWidth(CANVAS_WIDTH);
   canvas.strokeEllipse(bgr);
 
   for (let t = 0; t < deg; t++) {
-    const rect_x = ctr.x + canvRadius * sinDeg(t) - canvWidth / 2;
-    const rect_y = ctr.y - canvRadius * cosDeg(t) - canvWidth / 2;
-    const rect_r = new Rect(rect_x, rect_y, canvWidth, canvWidth);
+    const rect_x = ctr.x + CANVAS_RADIUS * sinDeg(t) - CANVAS_WIDTH / 2;
+    const rect_y = ctr.y - CANVAS_RADIUS * cosDeg(t) - CANVAS_WIDTH / 2;
+    const rect_r = new Rect(rect_x, rect_y, CANVAS_WIDTH, CANVAS_WIDTH);
     canvas.fillEllipse(rect_r);
   }
 
@@ -163,9 +194,19 @@ async function drawArc(on, percent) {
 }
 
 function sinDeg(deg) {
-  return Math.sin((deg * Math.PI) / 180);
+  try {
+    return Math.sin((deg * Math.PI) / 180);
+  } catch (error) {
+    console.error("Error in sinDeg function:", error);
+    throw new Error("Failed to calculate sine value");
+  }
 }
 
 function cosDeg(deg) {
-  return Math.cos((deg * Math.PI) / 180);
+  try {
+    return Math.cos((deg * Math.PI) / 180);
+  } catch (error) {
+    console.error("Error in cosDeg function:", error);
+    throw new Error("Failed to calculate cosine value");
+  }
 }
